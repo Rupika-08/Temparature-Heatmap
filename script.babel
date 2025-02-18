@@ -1,0 +1,65 @@
+const url = "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json";
+const width = 960, height = 570;
+
+d3.json(url).then(data => {
+    const root = d3.hierarchy(data).sum(d => d.value).sort((a, b) => b.value - a.value);
+    d3.treemap().size([width, height]).padding(1)(root);
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const svg = d3.select("#treemap").attr("width", width).attr("height", height);
+    const tooltip = d3.select("#tooltip");
+
+    const tiles = svg.selectAll(".tile")
+        .data(root.leaves())
+        .enter()
+        .append("g")
+        .attr("class", "tile-group");
+
+    tiles.append("rect")
+        .attr("class", "tile")
+        .attr("x", d => d.x0)
+        .attr("y", d => d.y0)
+        .attr("width", d => d.x1 - d.x0)
+        .attr("height", d => d.y1 - d.y0)
+        .attr("fill", d => color(d.data.category))
+        .attr("data-name", d => d.data.name)
+        .attr("data-category", d => d.data.category)
+        .attr("data-value", d => d.data.value)
+        .on("mousemove", (event, d) => {
+            tooltip.style("opacity", 1)
+                .html(`Name: ${d.data.name}<br>Category: ${d.data.category}<br>Value: ${d.data.value}`)
+                .attr("data-value", d.data.value)
+                .style("left", `${event.pageX + 10}px`)
+                .style("top", `${event.pageY + 10}px`);
+        })
+        .on("mouseout", () => tooltip.style("opacity", 0));
+
+    tiles.append("text")
+        .attr("x", d => d.x0 + 5)
+        .attr("y", d => d.y0 + 15)
+        .attr("font-size", "10px")
+        .attr("fill", "white")
+        .text(d => d.data.name.length > 10 ? d.data.name.substring(0, 10) + "..." : d.data.name);
+
+    tooltip.style("opacity", 0);
+
+    const categories = [...new Set(root.leaves().map(d => d.data.category))];
+    const legend = d3.select("#legend").attr("width", width).attr("height", 50);
+    const legendItems = legend.selectAll(".legend-item")
+        .data(categories)
+        .enter()
+        .append("g")
+        .attr("transform", (d, i) => `translate(${i * 100}, 0)`);
+
+    legendItems.append("rect")
+        .attr("class", "legend-item")
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("fill", d => color(d));
+
+    legendItems.append("text")
+        .attr("x", 25)
+        .attr("y", 15)
+        .text(d => d);
+});
