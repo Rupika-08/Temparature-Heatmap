@@ -4,7 +4,10 @@ Global Temparature HeatMap
 
 This project is a D3.js-based heatmap that visualizes global temperature variations over time using color-coded blocks. The dataset is sourced from FreeCodeCamp and provides monthly temperature anomalies from 1753 to 2015.
 
-The project is built as part of the FreeCodeCamp Data Visualization Certification and meets all required user stories.
+The project is built as part of the FreeCodeCamp Data Visualization Certification.
+
+🎨 Live Demo
+https://codepen.io/Rupika-08/full/bNGEBod
 
 🚀 Features:
 
@@ -39,3 +42,4 @@ CSS – Styling & layout adjustments
 JavaScript (ES6) – Logic implementation
 
 D3.js – Data visualization & rendering
+
